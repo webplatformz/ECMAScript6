@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>.: ECMAScript 6 :.</title>
+
+    <meta name="description" content="Preview of the upcoming ECMAScript 6 specification">
+    <meta name="author" content="Patrick Walther">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+
+    <link rel="icon" href="images/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/theme/zuehlke.css" id="theme">
+
+    <link rel="stylesheet" href="css/presentation.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+</head>
+
+<body>
+
+    <div class="reveal">
+
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <span id="zuehlke-header" class="zuehlke-header hide"></span>
+            <section>
+                <div class="zuehlke-center" style="margin-top: 30px;">
+                    <img src="/images/es6-hiway-sign.png" />
+                    <div style="margin-top: 40px; font-weight: bold; letter-spacing: 0.2em;">Formal Publication June 2015</div>
+                </div>
+            </section>
+
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Syntactic Sugar</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Block Scope</h2>
+                    <pre><code class="javascript">
+if(true) {
+    let i = 1;
+}
+
+for(let i = 0; i < 10; i++) {
+    // Do something really important with i
+}
+
+console.log(i); //Reference Error
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Constants</h2>
+                    <pre><code class="javascript">
+const AWESOME_CONSTANT = 10;
+
+AWESOME_CONSTANT = 50;//AWESOME_CONSTANT is read-only
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Destructuring</h2>
+                    <pre><code class="javascript">
+//Matching
+let [first, second] = [1, 2, 3, 4];
+console.log(first + " and " + second); // 1 and 2
+
+//With rest param (later)
+let [first, ...rest] = [1, 2, 3, 4];
+console.log(rest); // 2,3,4
+
+//swapping
+[first, second] = [second, first];
+console.log(first + " and " + second); // 2 and 1
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Object Literal</h2>
+                    <br />
+                    <pre><code class="javascript">
+let firstName = "Spongebob";
+let lastName = "Squarepants";
+
+console.log({
+    firstName,
+    lastName,
+    getName() {
+        return firstName + " " + lastName;
+    }
+});
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Object.is</h2>
+                    <br />
+                    <pre><code class="javascript">
+NaN === NaN; //false
+
+Object.is(NaN, NaN); // true
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Object.assign</h2>
+                    <p>
+                        jQuery.extend functionality
+                    </p>
+                    <pre><code class="javascript">
+let a = {name: "JavaScript"};
+let b = {name: "ECMAScript", isOnTrack: true};
+
+Object.assign(a, b);
+/*
+    {
+        "name": "ECMAScript",
+        "isOnTrack": true
+    }
+*/
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Template Strings</h2>
+                    <br />
+                    <pre><code class="javascript">
+let obj = {
+    name: "ECMA Script 6",
+    is: "almost finished!"
+};
+
+console.log(`${obj.name} is 
+${obj.is}`);
+/*
+    ECMA Script 6 is almost finished!
+*/
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Useful String Utils</h2>
+                    <br />
+                    <pre><code class="javascript">
+let test = "Der Bestatter";
+
+console.log(test.startsWith("Der"));
+
+console.log(test.contains("er B"));
+
+console.log(test.endsWith("atter"));
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Useful Number Utils</h2>
+                    <br />
+                    <pre><code class="javascript">
+Number.isInteger(5); //true
+
+Number.isSafeInteger(Math.pow(2, 53)); //false
+
+Number.isNaN(NaN); //true
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Functions</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Arrow Functions</h2>
+                    <p>
+                        The ES 5 Version with binding this manually
+                    </p>
+                    <pre><code class="javascript">
+var reorgBuilder = {
+    name: "Awesome new Reorg",
+    
+    createNewReorg: function createNewReorg() {
+        return function() {
+            console.log(this.name + 
+                " will be finished in: 5 months!"
+            );
+        }.bind(this);
+    }
+};
+
+var newReorg = reorgBuilder.createNewReorg();
+newReorg();
+                    </code></pre>
+                </section>
+                <section>
+                    <p>
+                        ES 6 Arrow Function and this binding
+                    </p>
+                    <pre><code class="javascript">
+let reorgBuilder = {
+    name: "Awesome new Reorg",
+    
+    createNewReorg() {
+        return () => console.log(this.name + 
+            " will be finished in: 5 months!");
+    }
+};
+
+let newReorg = reorgBuilder.createNewReorg();
+newReorg();
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Default Params</h2>
+                    <p>
+                        ES 5 Way
+                    </p>
+                    <pre><code class="javascript">
+function log(msg) {
+    var msg = msg || "Aaaah!";
+    console.log(msg);
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Default Params</h2>
+                    <p>
+                        ES 6 Way
+                    </p>
+                    <pre><code class="javascript">
+function log(msg = "Aaaah!") {
+    console.log(msg);
+}
+
+log(); // Aaaah!
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Spread & Rest</h2>
+                    <br />
+                    <pre><code class="javascript">
+var langs = ["C#", "Java", "JavaScript"];
+
+function processLanguages(first, ...rest) {
+	console.log(first);
+  
+	if(rest.length > 0) {
+		processLanguages(...rest);
+	}
+}
+
+processLanguages(...langs);
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Named Parameters</h2>
+                    <br />
+                    <pre><code class="javascript">
+let person = { lastName: "Müller" };
+
+function logPerson({ firstName = "Manfred", lastName}) {
+    console.log(`Hallo ${firstName} ${lastName}`);
+}
+
+logPerson(person); // Hallo Manfred Müller
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Arrays</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>findIndex(callback[, thisArg])</h2>
+                    <br />
+                    <pre><code class="javascript">
+let array = [
+    { name: "Luc Conrad", actor: "Mike Müller" },
+    { name: "Anna-Maria Giovanoli", actor: "Barbara Terpoorten" },
+    { name: "Fabio Testi", actor: "Reto Stalder" }
+];
+
+console.log(
+    array.findIndex(
+      (element) => element.actor === "Reto Stalder"
+    )
+);
+// 2
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>find(callback[, thisArg])</h2>
+                    <br />
+                    <pre><code class="javascript">
+let array = [
+    { name: "Luc Conrad", actor: "Mike Müller" },
+    { name: "Anna-Maria Giovanoli", actor: "Barbara Terpoorten" },
+    { name: "Fabio Testi", actor: "Reto Stalder" }
+];
+
+console.log(
+    array.find(
+      (element) => element.actor === "Reto Stalder"
+    )
+);
+// { name: "Fabio Testi", actor: "Reto Stalder" }
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>fill(value[, start = 0[, end = this.length]])</h2>
+                    <br />
+                    <pre><code class="javascript">
+let array = [1, 2, 3].fill(4);
+console.log(array); // 4, 4, 4
+
+array.fill(1, -1, array.length);
+console.log(array); // 4, 4, 1
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>from(arrayLike[, mapFn[, thisArg]])</h2>
+                    <br />
+                    <pre><code class="javascript">
+// ES 5
+function noParams() {
+    var params = Array.prototype.slice.call(arguments, 0);
+    /* Awesome Function stuff */
+}
+
+// ES 6
+function noParams() {
+    var params = Array.from(arguments);
+    /* Awesome Function stuff */
+}
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Generators</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>function*</h2>
+                    <br />
+                    <ul>
+                        <li>functions</li>
+                        <li>Can be exited and re-entered</li>
+                        <li>return an iterator</li>
+                        <li>iterator.next() returns {value:"...", done:true/false}</li>
+                        <li>next runs function until next yield-Statement</li>
+                        <li>value: value which the yield statement returns</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Generators</h2>
+                    <br />
+                    <pre><code class="javascript">
+function* idMaker(){
+    var index = 0;
+    while(true)
+        yield index++;
+}
+
+var generator = idMaker();
+
+console.log(generator.next().value); // 0
+console.log(generator.next().value); // 1
+console.log(generator.next().value); // 2
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Generators</h2>
+                    <br />
+                    <pre><code class="javascript">
+function* fibonacci(i) {
+  let a = 0, b = 1;
+
+  while(a < i) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+for(let value of fibonacci(1000)) {
+  console.log(value);
+}
+                    </code></pre>
+                </section>
+            </section>
+            
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Proxies</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Proxies</h2>
+                    <br />
+                    <ul>
+                        <li>Custom Behaviour for fundamental operations</li>
+                        <li>property lookup, assignment, enumeration, function invocation, etc</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Proxies</h2>
+                    <br />
+                    <pre><code class="javascript">
+var handler = {
+    get: function(target, name){
+        return name in target?
+            target[name] :
+            37;
+    }
+};
+
+var p = new Proxy({}, handler);
+p.a = 1;
+
+console.log(p.a); // 1
+console.log(p.c); // 37
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Symbols</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Symbols</h2>
+                    <p>
+                        Symbols are always unique
+                    </p>
+                    <pre><code class="javascript">
+console.log(Symbol() === Symbol()); // false
+
+console.log(Symbol()); // e.g. __$170629571$32$__
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>WAT?</h2>
+                    <br />
+                    <pre><code class="javascript">
+let map = new Map();
+
+map.set(Symbol(), "Where am I?");
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Class</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Class</h2>
+                    <br />
+                    <pre><code class="javascript">
+class Car {
+  constructor(name) {
+    this.name = name;
+  }
+  
+  getName() {
+    return this.name;
+  }
+}
+
+let car = new Car("Elfriede");
+console.log(car.getName()); // Elfriede
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Child Class</h2>
+                    <br />
+                    <pre><code class="javascript">
+class SpecialCar extends Car {
+  constructor(name) {
+    super("normal name");
+    this.specialName = name;
+  }
+  
+  getSpecialName() {
+    return this.specialName;
+  }
+}
+
+let car = new SpecialCar("Elfriede");
+console.log(car.getSpecialName()); // Elfriede
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section>
+                <section data-state='orange'>
+                    <div class="zuehlke-center">
+                        <div class="zuehlke-splash-title">Modules</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Modules</h2>
+                    <p>
+                        Exporting
+                    </p>
+                    <pre><code class="javascript">
+var local = "I'm local";
+
+export default function myAwesomeModuleFunction() {
+    /* some awesome function stuff */
+}
+
+export var public = "I'm public!";
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Modules</h2>
+                    <p>
+                        Importing
+                    </p>
+                    <pre><code class="javascript">
+import * as awesomeModule from "lib/myModule";
+awesomeModule.myAwesomeModuleFunction();
+
+import as awesomeModule from "lib/myModule";
+awesomeModule();
+
+import public as publicVar from "lib/myModule";
+console.log(public}; // I'm public!
+
+                    </code></pre>
+                </section>
+            </section>
+                
+            <section data-transition="linear" data-state="zuehlke-bg-parallax" data-parallax-step=0>
+                <div class="zuehlke-center">
+                    <div class="zuehlke-splash-title">When?</div>
+                </div>
+            </section>
+            <section data-transition="linear" data-state="zuehlke-bg-parallax" data-parallax-step=1>
+                <div class="zuehlke-center">
+                    <div class="zuehlke-splash-title">Today!!</div>
+                </div>
+            </section>
+            <section data-transition="linear" data-state="zuehlke-bg-parallax" data-parallax-step=2>
+                <div class="zuehlke-center">
+                    <div class="zuehlke-splash-title">
+                        6to5 has 76% implemented
+                    </div>
+                </div>
+            </section>
+            <section data-transition="linear" data-state="zuehlke-bg-parallax" data-parallax-step=3>
+                <div class="zuehlke-center">
+                    <div class="zuehlke-splash-title">
+                        Traceur has 60% implemented
+                    </div>
+                </div>
+            </section>
+            <section data-transition="linear" data-state="zuehlke-bg-parallax" data-parallax-step=4>
+                <div class="zuehlke-center">
+                    <div class="zuehlke-splash-title">
+                        IE Technical Preview has 70% implemented !!!!
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+        // Full list of configuration options available here:
+         // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+            transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: 'images/presentation/sidney_night.jpg',
+            // parallaxBackgroundSize: '5241px 1116px',
+
+            // Optional libraries used to extend on reveal.js
+            dependencies: [{
+                src: 'lib/js/classList.js',
+                condition: function() {
+                    return !document.body.classList;
+                }
+            }, {
+                src: 'plugin/markdown/marked.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/markdown/markdown.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true,
+                condition: function() {
+                    return !!document.body.classList;
+                }
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true,
+                condition: function() {
+                    return !!document.body.classList;
+                }
+            }, {
+                src: 'plugin/zuehlke/zuehlke.js',
+                condition: function() {
+                    return true;
+                }
+            }, {
+                src: 'plugin/chart/chart.js',
+                async: false,
+                condition: function() {
+                    return true;
+                }
+            }, {
+                src: 'js/presentation.js',
+                async: false,
+                condition: function() {
+                    return true;
+                }
+            }]
+        });
+    </script>
+
+</body>
+
+</html>
